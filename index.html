@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadith AI - محادثة تفاعلية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lateef:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mirza:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a472a;
+            --secondary-color: #2e8b57;
+            --accent-color: #3ab982;
+            --light-color: #f5f9f7;
+            --dark-color: #0d2615;
+            --text-color: #333;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.2);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* حركة انسيابية أكثر */
+            --aqua-green: #2ecc71;
+            --current-font: 'Amiri', serif;
+            --user-msg-bg: #e3f2fd;
+            --ai-msg-bg: #f1f8e9;
+            --user-msg-color: #0d47a1;
+            --ai-msg-color: #1b5e20;
+            --youtube-red: #ff0000;
+        }
+
+        /* تحسين الوضع الليلي ليكون أكثر راحة للعين (Eye-Comfort) */
+        .dark-mode {
+            --primary-color: #05140a; /* لون أعمق */
+            --secondary-color: #0f2e1b;
+            --accent-color: #3ab982;
+            --light-color: #121212; /* رمادي داكن مطفي بدلاً من الأسود */
+            --dark-color: #e0e0e0;
+            --text-color: #cdd6d0; /* أبيض مائل للخضرة الخفيفة لراحة العين */
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --glass-bg: rgba(20, 30, 20, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.05);
+            --aqua-green: #27ae60;
+            --user-msg-bg: #1e2535; /* أزرق ليلي هادئ */
+            --ai-msg-bg: #142b1a; /* أخضر ليلي عميق */
+            --user-msg-color: #bbdefb;
+            --ai-msg-color: #dcedc8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--current-font);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            min-height: 100vh;
+            transition: var(--transition);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden; /* منع التمرير الأفقي أثناء الأنيميشن */
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: floatLogo 3s ease-in-out infinite; /* أنيميشن طفو للشعار */
+        }
+
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .logo-text {
+            font-family: 'Scheherazade New', serif;
+            font-size: 2.2rem;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: #d4af37;
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3));
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Liquid Glass Button - Enhanced */
+        .liquid-glass-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 50px;
+            padding: 12px 25px;
+            color: white;
+            font-family: var(--current-font);
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--glass-shadow);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1;
+        }
+
+        .liquid-glass-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 50px;
+            z-index: -2;
+        }
+
+        .liquid-glass-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.4s ease;
+            z-index: -1;
+            border-radius: 50px;
+        }
+
+        .liquid-glass-btn:hover::before {
+            width: 100%;
+        }
+
+        .liquid-glass-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Menu Button Icon Animation */
+        #menu-btn:hover i {
+            animation: bookFlip 0.6s ease;
+        }
+
+        @keyframes bookFlip {
+            0% { transform: scaleX(1); }
+            50% { transform: scaleX(0.1); opacity: 0.5; }
+            100% { transform: scaleX(1); opacity: 1; }
+        }
+
+        /* زر الإرسال بلون أخضر مائي */
+        #send-btn {
+            background: var(--aqua-green);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        
+        #send-btn:hover i {
+            animation: flyPlane 1s ease infinite;
+        }
+        
+        @keyframes flyPlane {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(-3px, -3px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* Chat Area */
+        .chat-area {
+            flex: 1;
+            background: var(--light-color);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); /* ظل أعمق */
+            overflow: hidden;
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            max-height: 65vh;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .chat-header {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-action-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .chat-action-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: rotate(15deg);
+        }
+
+        .messages-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Scrollbar */
+        .messages-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .messages-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .messages-container::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.1);
+            border-radius: 4px;
+        }
+        .dark-mode .messages-container::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 15px;
+            border-radius: 18px;
+            line-height: 1.7;
+            position: relative;
+            animation: messagePopIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transform-origin: bottom right;
+        }
+        
+        .ai-message {
+            transform-origin: bottom left;
+        }
+
+        @keyframes messagePopIn {
+            from { opacity: 0; transform: scale(0.9) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: var(--user-msg-bg);
+            color: var(--user-msg-color);
+            border-bottom-right-radius: 5px;
+        }
+
+        .ai-message {
+            align-self: flex-start;
+            background: var(--ai-msg-bg);
+            color: var(--ai-msg-color);
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-content {
+            font-size: 1.1rem;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: 5px;
+            text-align: left;
+        }
+
+        .message-actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .message-action {
+            background: none;
+            border: none;
+            color: inherit;
+            opacity: 0.7;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .message-action:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 15px;
+            background: var(--light-color); /* Matches theme */
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+        
+        .dark-mode .input-area {
+            background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .input-box {
+            display: flex;
+            gap: 15px;
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 18px 20px;
+            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: 15px;
+            font-family: var(--current-font);
+            font-size: 1.1rem;
+            min-height: 60px;
+            resize: none;
+            transition: var(--transition);
+            background: white;
+            color: #333;
+        }
+        
+        .dark-mode #user-input {
+            background: #252525;
+            color: #e0e0e0;
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        #user-input:focus {
+            border-color: var(--accent-color);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(58, 185, 130, 0.15);
+        }
+
+        #send-btn {
+            padding: 0 25px;
+            font-size: 1.2rem;
+        }
+
+        /* Font Size Controls */
+        .font-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--light-color);
+            border-radius: 15px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .dark-mode .font-controls {
+            background: #1a1a1a;
+        }
+
+        .font-controls label {
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        
+        .dark-mode .font-controls label {
+            color: var(--accent-color);
+        }
+
+        #font-size-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: #e0e0e0;
+            outline: none;
+        }
+        
+        .dark-mode #font-size-slider {
+            background: #333;
+        }
+
+        #font-size-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+        
+        #font-size-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* Modal Styles with Advanced Animation */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px); /* تمويه الخلفية */
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            perspective: 1500px; /* للـ 3D */
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transform-style: preserve-3d;
+            /* Animation applied dynamically via JS classes or default */
+            animation: modalPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        /* Book Opening Animation for Menu */
+        .modal.book-mode .modal-content {
+            animation: bookOpen 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            transform-origin: left center; /* نقطة الارتكاز ككعب الكتاب */
+        }
+        
+        @keyframes bookOpen {
+            0% {
+                opacity: 0;
+                transform: rotateY(-90deg) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: rotateY(0deg) scale(1);
+            }
+        }
+        
+        /* Default Pop */
+        @keyframes modalPop {
+            0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .dark-mode .modal-content {
+            background: #15201a;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 30px;
+            line-height: 1.8;
+            color: #333;
+        }
+        
+        .dark-mode .modal-body {
+            color: #cdd6d0;
+        }
+
+        .contact-card {
+            background: var(--light-color);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .dark-mode .contact-card {
+            background: #1a1a1a;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin: 15px 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            cursor: pointer;
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Interactive Menu Hover Effect */
+        .contact-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--accent-color);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .contact-item:hover::before {
+            transform: scaleY(1);
+        }
+        
+        .dark-mode .contact-item {
+            background: #252525;
+            color: #e0e0e0;
+            border-color: rgba(255,255,255,0.05);
+        }
+
+        .contact-item:hover {
+            transform: translateX(-5px); /* تحرك بسيط لليسار */
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-icon {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        /* تدوير الأيقونة عند الهوفر */
+        .contact-item:hover .contact-icon {
+            transform: scale(1.2) rotate(10deg);
+        }
+        
+        /* Gear Spin specific for settings */
+        #settings-menu:hover .fa-cog {
+            animation: gearSpin 2s linear infinite;
+        }
+        
+        @keyframes gearSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .dark-mode .contact-icon {
+            color: #3ab982;
+        }
+
+        .contact-text {
+            flex: 1;
+            text-align: right;
+            font-size: 1.1rem;
+            color: #333;
+        }
+        
+        .dark-mode .contact-text {
+            color: #e0f0e0;
+        }
+        
+        /* زر اليوتيوب المطور */
+        .youtube-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(45deg, #c0392b, #e74c3c);
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .youtube-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.5);
+        }
+        
+        .youtube-btn i {
+            font-size: 1.5rem;
+            background: white;
+            color: #c0392b;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* History Styles */
+        .history-item {
+            background: #f8f8f8;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+        
+        .dark-mode .history-item {
+            background: #252525;
+            color: #e0e0e0;
+        }
+
+        .history-item:hover {
+            transform: translateX(-5px);
+            border-left-color: var(--accent-color);
+            background: white;
+        }
+        
+        .dark-mode .history-item:hover {
+            background: #2a2a2a;
+        }
+
+        .history-question {
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .dark-mode .history-question {
+            color: #3ab982;
+        }
+
+        .history-answer {
+            color: #555;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        .dark-mode .history-answer {
+            color: #b0c0b0;
+        }
+
+        .history-date {
+            font-size: 0.85rem;
+            color: #888;
+            text-align: left;
+            margin-top: 8px;
+        }
+        
+        .dark-mode .history-date {
+            color: #889988;
+        }
+
+        .clear-history {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 25px;
+            font-family: var(--current-font);
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(58, 185, 130, 0.3);
+        }
+
+        .clear-history:hover {
+            background: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(58, 185, 130, 0.5);
+        }
+
+        /* Settings Styles */
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            margin: 15px 0;
+            background: #f8f8f8;
+            border-radius: 12px;
+            transition: var(--transition);
+        }
+        
+        .dark-mode .setting-item {
+            background: #252525;
+        }
+
+        .setting-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* Settings Icon Animation */
+        .setting-label i {
+            transition: transform 0.5s ease;
+        }
+        
+        .setting-item:hover .setting-label i.fa-cog, 
+        .setting-item:hover .setting-label i.fa-moon,
+        .setting-item:hover .setting-label i.fa-font {
+            transform: rotate(360deg); /* تدوير عند التحويم */
+        }
+
+        .font-select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background: white;
+            font-family: var(--current-font);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .font-select:hover {
+            border-color: var(--accent-color);
+        }
+        
+        .dark-mode .font-select {
+            background: #1a1a1a;
+            color: #e0f0e0;
+            border-color: #2e8b57;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo-text {
+                font-size: 1.8rem;
+            }
+            
+            .input-box {
+                flex-direction: column;
+            }
+            
+            #send-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+            
+            .modal-content {
+                width: 95%;
+            }
+        }
+
+        /* Dark mode toggle */
+        .dark-mode-toggle {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+
+        .dark-mode-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* حركة مطاطية */
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+
+        .slider i {
+            position: absolute;
+            top: 6px;
+            color: white;
+            font-size: 18px;
+            transition: opacity 0.3s;
+        }
+
+        .fa-sun {
+            right: 8px;
+            opacity: 1;
+        }
+        
+        input:checked + .slider .fa-sun {
+            opacity: 0;
+        }
+
+        .fa-moon {
+            left: 8px;
+            opacity: 0;
+        }
+        
+        input:checked + .slider .fa-moon {
+            opacity: 1;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            padding: 10px;
+        }
+
+        .loading-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            animation: bounce 1.5s infinite ease-in-out;
+        }
+
+        .loading-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .loading-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Quran Verse */
+        .quran-verse {
+            font-family: 'Scheherazade New', serif;
+            font-size: 1.3rem;
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            color: white;
+            line-height: 2.2;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.1);
+            animation: floatVerse 5s ease-in-out infinite;
+        }
+        
+        @keyframes floatVerse {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 25px;
+            padding: 15px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-book-quran logo-icon"></i>
+                <h1 class="logo-text">Hadith AI</h1>
+            </div>
+            <div class="controls">
+                <button class="liquid-glass-btn" id="menu-btn">
+                    <i class="fas fa-bars"></i> القائمة
+                </button>
+            </div>
+        </div>
+
+        <div class="quran-verse">
+            ﴿يَرْفَعِ اللَّهُ الَّذِينَ آمَنُوا مِنْكُمْ وَالَّذِينَ أُوتُوا الْعِلْمَ دَرَجَاتٍ﴾ [المجادلة: 11]
+        </div>
+
+        <div class="chat-area">
+            <div class="chat-header">
+                <div class="chat-title">محادثة مع Hadith AI</div>
+                <div class="chat-actions">
+                    <button class="chat-action-btn" id="clear-chat-btn" title="مسح المحادثة">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <button class="chat-action-btn" id="copy-chat-btn" title="نسخ المحادثة">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="messages-container" id="messages-container">
+                <div class="message ai-message">
+                    <div class="message-content">
+                        السلام عليكم ورحمة الله وبركاته 🌿<br>
+                        أنا Hadith AI، مساعدك الشرعي التابع لمنظمة حديث الإسلامية. كيف يمكنني مساعدتك اليوم؟
+                    </div>
+                    <div class="message-time">الآن</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <div class="input-box">
+                <textarea id="user-input" placeholder="اكتب سؤالك الشرعي هنا..."></textarea>
+                <button id="send-btn" class="liquid-glass-btn">
+                    <i class="fas fa-paper-plane"></i> إرسال
+                </button>
+            </div>
+        </div>
+
+        <div class="font-controls">
+            <label for="font-size-slider">حجم الخط:</label>
+            <input type="range" id="font-size-slider" min="14" max="24" value="18">
+            <span id="font-size-value">18px</span>
+        </div>
+    </div>
+
+    <div class="modal" id="about-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">حول Hadith AI</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>هويتنا</h3>
+                <p><strong>الاسم:</strong> Hadith AI</p>
+                <p><strong>المؤسس:</strong> طارق الفارس</p>
+                <p><strong>الجهة:</strong> منظمة حديث الإسلامية</p>
+                
+                <h3>مهمتنا</h3>
+                <p>تتمثل مهمتنا في تقديم إجابات دقيقة وموثوقة للأسئلة الشرعية والفقهية والعقائدية والتفسيرية، معتمدين في ذلك على:</p>
+                <ul>
+                    <li>القرآن الكريم وتفاسيره المعتبرة (الطبري، ابن كثير، القرطبي، البغوي، السعدي)</li>
+                    <li>السنة النبوية الصحيحة من جميع كتب الحديث المعتمدة (الصحيحين، السنن الأربعة، موطأ مالك، مسند أحمد وغيرها)</li>
+                    <li>المذاهب الأربعة كاملة (الحنفي، المالكي، الشافعي، الحنبلي) بأصولها وفروعها المعتمدة</li>
+                    <li>الترجيح عند الخلاف بالاعتماد على قول الجمهور والراجح بالدليل</li>
+                    <li>العقيدة الإسلامية وفق منهج أهل السنة والجماعة</li>
+                </ul>
+                
+                <p>نلتزم بعدم الإفتاء إلا بالقول الصحيح المعتمد من العلماء المعتبرين، بأسلوب فصيح وعلمي ومباشر دون استخدام القصص أو الأساليب الأدبية.</p>
+                
+                <h3>قناة حديث على اليوتيوب</h3>
+                <p>نحن على اطلاع دائم بمحتوى قناة "حديث" على اليوتيوب التابعة لطارق الفارس، ويمكننا الإجابة عن أي سؤال يخصها.</p>
+                <a href="https://youtube.com/@hadith_1?si=TIO1FNbLkscJgyyO" target="_blank" class="youtube-btn">
+                    <i class="fab fa-youtube"></i>
+                    اشترك في القناة
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="support-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">الدعم الفني والاتصال</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="contact-card">
+                    <h3>منظمة حديث الإسلامية</h3>
+                    <p>تواصل معنا عبر القنوات التالية:</p>
+                    
+                    <div class="contact-item" id="email-contact">
+                        <i class="fas fa-envelope contact-icon"></i>
+                        <div class="contact-text">
+                            البريد الإلكتروني: tareksalah71717@gmail.com
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item" id="whatsapp-contact">
+                        <i class="fab fa-whatsapp contact-icon"></i>
+                        <div class="contact-text">
+                            واتساب: التواصل عبر الرابط
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item" id="youtube-contact">
+                        <i class="fab fa-youtube contact-icon"></i>
+                        <div class="contact-text">
+                            قناة حديث على اليوتيوب
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item" id="instagram-contact">
+                        <i class="fab fa-instagram contact-icon"></i>
+                        <div class="contact-text">
+                            انستجرام: Islamic_hadith4
+                        </div>
+                    </div>
+                    
+                    <div class="copyright">
+                        © جميع الحقوق محفوظة لمنظمة حديث الإسلامية 2023
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="history-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">سجل المحادثات</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="history-container">
+                    </div>
+                <button class="clear-history" id="clear-history">
+                    <i class="fas fa-trash"></i> مسح السجل
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="settings-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">الإعدادات</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <i class="fas fa-moon"></i>
+                        <span>الوضع الداكن</span>
+                    </div>
+                    <div class="dark-mode-toggle">
+                        <input type="checkbox" id="dark-mode-toggle">
+                        <label for="dark-mode-toggle" class="slider">
+                            <i class="fas fa-sun"></i>
+                            <i class="fas fa-moon"></i>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <i class="fas fa-font"></i>
+                        <span>نوع الخط</span>
+                    </div>
+                    <select id="font-select" class="font-select">
+                        <option value="Amiri">Amiri (افتراضي)</option>
+                        <option value="Scheherazade New">Scheherazade New</option>
+                        <option value="Lateef">Lateef</option>
+                        <option value="Mirza">Mirza</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="menu-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">القائمة</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="contact-item" id="about-menu">
+                    <i class="fas fa-info-circle contact-icon"></i>
+                    <div class="contact-text">حول Hadith AI</div>
+                </div>
+                
+                <div class="contact-item" id="history-menu">
+                    <i class="fas fa-history contact-icon"></i>
+                    <div class="contact-text">سجل المحادثات</div>
+                </div>
+                
+                <div class="contact-item" id="settings-menu">
+                    <i class="fas fa-cog contact-icon"></i>
+                    <div class="contact-text">الإعدادات</div>
+                </div>
+                
+                <div class="contact-item" id="support-menu">
+                    <i class="fas fa-headset contact-icon"></i>
+                    <div class="contact-text">الدعم الفني</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const messagesContainer = document.getElementById('messages-container');
+        const clearChatBtn = document.getElementById('clear-chat-btn');
+        const copyChatBtn = document.getElementById('copy-chat-btn');
+        const fontSlider = document.getElementById('font-size-slider');
+        const fontSizeValue = document.getElementById('font-size-value');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const menuBtn = document.getElementById('menu-btn');
+        const modals = document.querySelectorAll('.modal');
+        const closeButtons = document.querySelectorAll('.close-modal');
+        const historyContainer = document.getElementById('history-container');
+        const clearHistoryBtn = document.getElementById('clear-history');
+        const fontSelect = document.getElementById('font-select');
+        
+        // API Configuration
+        const API_KEY = 'AIzaSyD26WKPOrsAy2LlTPYE8hqTassogRrOKno';
+        const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+        
+        // Set initial font size
+        let fontSize = 18;
+        fontSizeValue.textContent = `${fontSize}px`;
+        
+        // Conversation array (from localStorage)
+        let currentConversation = JSON.parse(localStorage.getItem('hadith_ai_current_conversation')) || [
+            {
+                role: 'ai',
+                content: 'السلام عليكم ورحمة الله وبركاته 🌿<br>أنا Hadith AI، مساعدك الشرعي التابع لمنظمة حديث الإسلامية. كيف يمكنني مساعدتك اليوم؟',
+                timestamp: new Date().toISOString()
+            }
+        ];
+        
+        // History array (from localStorage)
+        let conversationHistory = JSON.parse(localStorage.getItem('hadith_ai_conversation_history')) || [];
+        
+        // التعليمات الأساسية للنموذج
+        const SYSTEM_INSTRUCTIONS = `
+أنت الآن Hadith AI التابع لمنظمة حديث الإسلامية التي أسسها طارق الفارس.
+
+**الهوية:**
+- الاسم: Hadith AI
+- المؤسس: طارق الفارس
+- الجهة: منظمة حديث الإسلامية
+
+**المهمة:**
+مهمتك هي الإجابة عن الأسئلة الشرعية والفقهية والعقائدية والتفسيرية بدقة ووضوح، والاعتماد الكامل على المصادر الموثوقة من القرآن الكريم والسنة النبوية والمذاهب الأربعة، وفق منهج أهل السنة والجماعة.
+يجب أن تكون إجاباتك علمية، فصيحة، واضحة، مباشرة، دون غموض أو استخدام للأساليب الأدبية أو القصصية.
+
+**الدقة:**
+"قبل الإجابة، قم بتحليل السؤال تحليلًا لغويًا وشرعيًا دقيقًا: فكّ ألفاظه، حدّد مراد السائل، بيّن أيّ غموض أو افتراضات ضمنية، واستشهد بالأدلة الفقهية والنصوص المناسبة مع توضيح درجة اليقين."
+
+**المصادر الأساسية:**
+1. القرآن الكريم وتفاسيره المعتبرة:
+   الطبري، ابن كثير، القرطبي، البغوي، السعدي، النفَسي.. جميع كتب التفسير المعتمدة الصحيحة.
+2. السنة النبوية الصحيحة من كتب الحديث المعتمدة:
+   صحيح البخاري، صحيح مسلم، سنن أبي داود، سنن الترمذي، سنن النسائي، سنن ابن ماجه، موطأ مالك، مسند أحمد، مصنف عبد الرزاق، مصنف ابن أبي شيبة.
+3. المذاهب الأربعة الفقهية:
+   الحنفي، المالكي، الشافعي، الحنبلي.
+   مع الالتزام بأقوال أئمتها المعتبرة وفروعها المعتمدة.
+
+**⚖️ منهج الترجيح والفتوى:**
+- عند الخلاف بين العلماء، يُقدَّم قول الجمهور.
+- إن لم يوجد قول جمهور، يُرجَّح القول الأقوى بالدليل الصحيح من الكتاب والسنة.
+- لا تُصدر فتوى إلا إذا كانت مدعومة بدليل شرعي صحيح أو بقول عالم معتبر.
+
+**منهج العقيدة:**
+- تتبع العقيدة الإسلامية وفق منهج أهل السنة والجماعة.
+- ترد على الفرق المنحرفة ردًا علميًا هادئًا بالبرهان والدليل الشرعي.
+
+**العلماء المعاصرون الذين يُستأنس بأقوالهم:**
+ابن باز، ابن عثيمين، الألباني، الفوزان، صالح آل الشيخ، عبد الكريم الخضير، وغيرهم من جميع العلماء الموثوقين.
+
+**المرجعية الإعلامية:**
+أنت مطّلع على قناة "حديث" على اليوتيوب التابعة للمؤسس طارق الفارس، ويمكنك الإجابة عن أي سؤال يخصها أو محتواها.
+رابط القناة: https://youtube.com/@hadith_1?si=TIO1FNbLkscJgyyO
+
+**الأسلوب العام:**
+- الأسلوب علمي فصيح وواضح.
+- الرد وقور ومحترم.
+- خالٍ من الغموض أو الأساليب الأدبية.
+- يعتمد النصوص الشرعية والدلائل الصحيحة.
+- استخدم ايموجيات لائقة في الاجابة مع تنسيق الاجابة بشكل جميل ومرتب.
+
+**تعليمات هامة:**
+- التزم بهويتك كـ Hadith AI ولا تخرج عنها.
+- لا تقدم أي معلومات غير شرعية أو غير موثوقة.
+- ركز على المصادر المعتمدة والمذاهب الأربعة.
+- كن دقيقًا في النقل والاستدلال.
+- اذكر المصادر عند الاقتضاء.
+        `;
+
+        // Event Listeners
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        clearChatBtn.addEventListener('click', clearCurrentConversation);
+        copyChatBtn.addEventListener('click', copyCurrentConversation);
+        
+        fontSlider.addEventListener('input', () => {
+            fontSize = fontSlider.value;
+            fontSizeValue.textContent = `${fontSize}px`;
+            applyFontSizeToMessages();
+        });
+        
+        darkModeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        });
+        
+        // Menu Button triggers the Book Animation
+        menuBtn.addEventListener('click', () => {
+            const menuModal = document.getElementById('menu-modal');
+            menuModal.classList.add('book-mode'); // Enable book animation
+            menuModal.style.display = 'flex';
+        });
+        
+        // Helper function to close modals safely
+        function closeModalSafe(modal) {
+            modal.style.display = 'none';
+            // Reset book mode class if present
+            if (modal.classList.contains('book-mode')) {
+                modal.classList.remove('book-mode');
+            }
+        }
+        
+        // Modal functionality
+        document.getElementById('about-menu').addEventListener('click', () => {
+            closeModalSafe(document.getElementById('menu-modal'));
+            document.getElementById('about-modal').style.display = 'flex';
+        });
+        
+        document.getElementById('support-menu').addEventListener('click', () => {
+            closeModalSafe(document.getElementById('menu-modal'));
+            document.getElementById('support-modal').style.display = 'flex';
+        });
+        
+        document.getElementById('history-menu').addEventListener('click', () => {
+            closeModalSafe(document.getElementById('menu-modal'));
+            document.getElementById('history-modal').style.display = 'flex';
+            renderConversationHistory();
+        });
+        
+        document.getElementById('settings-menu').addEventListener('click', () => {
+            closeModalSafe(document.getElementById('menu-modal'));
+            document.getElementById('settings-modal').style.display = 'flex';
+        });
+        
+        document.getElementById('email-contact').addEventListener('click', () => {
+            window.location.href = 'mailto:tareksalah71717@gmail.com';
+        });
+        
+        document.getElementById('whatsapp-contact').addEventListener('click', () => {
+            window.open('https://wa.me/message/IC4CVGAOW35NI1', '_blank');
+        });
+        
+        document.getElementById('instagram-contact').addEventListener('click', () => {
+            window.open('https://instagram.com/Islamic_hadith4', '_blank');
+        });
+        
+        document.getElementById('youtube-contact').addEventListener('click', () => {
+            window.open('https://youtube.com/@hadith_1?si=TIO1FNbLkscJgyyO', '_blank');
+        });
+        
+        clearHistoryBtn.addEventListener('click', () => {
+            conversationHistory = [];
+            localStorage.removeItem('hadith_ai_conversation_history');
+            renderConversationHistory();
+        });
+        
+        fontSelect.addEventListener('change', () => {
+            const selectedFont = fontSelect.value;
+            document.documentElement.style.setProperty('--current-font', selectedFont);
+            applyFontToMessages(selectedFont);
+            localStorage.setItem('selectedFont', selectedFont);
+        });
+        
+        // Close modals
+        closeButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                // Find the closest parent modal
+                const modal = e.target.closest('.modal');
+                if (modal) {
+                    closeModalSafe(modal);
+                }
+            });
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                closeModalSafe(e.target);
+            }
+        });
+        
+        // Load preferences
+        function loadPreferences() {
+            // Dark mode
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.checked = true;
+            }
+            
+            // Font selection
+            const savedFont = localStorage.getItem('selectedFont');
+            if (savedFont) {
+                fontSelect.value = savedFont;
+                document.documentElement.style.setProperty('--current-font', savedFont);
+                applyFontToMessages(savedFont);
+            }
+            
+            // Load current conversation
+            renderCurrentConversation();
+        }
+        
+        // Render current conversation
+        function renderCurrentConversation() {
+            messagesContainer.innerHTML = '';
+            
+            currentConversation.forEach(msg => {
+                addMessageToChat(msg.role, msg.content, msg.timestamp, false);
+            });
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // Add message to chat
+        function addMessageToChat(role, content, timestamp = null, saveToStorage = true) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role === 'user' ? 'user-message' : 'ai-message'}`;
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            messageContent.innerHTML = content;
+            messageContent.style.fontSize = `${fontSize}px`;
+            
+            messageDiv.appendChild(messageContent);
+            
+            const messageTime = document.createElement('div');
+            messageTime.className = 'message-time';
+            messageTime.textContent = timestamp ? 
+                new Date(timestamp).toLocaleString('ar-EG', { hour: '2-digit', minute: '2-digit' }) : 
+                new Date().toLocaleString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+            
+            messageDiv.appendChild(messageTime);
+            
+            // Add message actions for AI messages
+            if (role === 'ai') {
+                const messageActions = document.createElement('div');
+                messageActions.className = 'message-actions';
+                
+                const copyAction = document.createElement('button');
+                copyAction.className = 'message-action';
+                copyAction.innerHTML = '<i class="fas fa-copy"></i> نسخ';
+                copyAction.addEventListener('click', () => {
+                    navigator.clipboard.writeText(content.replace(/<br>/g, '\n'));
+                    
+                    // Show feedback
+                    const originalText = copyAction.innerHTML;
+                    copyAction.innerHTML = '<i class="fas fa-check"></i> تم النسخ!';
+                    setTimeout(() => {
+                        copyAction.innerHTML = originalText;
+                    }, 2000);
+                });
+                
+                const shareAction = document.createElement('button');
+                shareAction.className = 'message-action';
+                shareAction.innerHTML = '<i class="fab fa-whatsapp"></i> مشاركة';
+                shareAction.addEventListener('click', () => {
+                    const shareText = encodeURIComponent(`إجابة من Hadith AI:\n${content.replace(/<br>/g, '\n')}\n\nللحصول على إجابات إسلامية موثوقة، قم بزيارة موقعنا.`);
+                    window.open(`https://wa.me/?text=${shareText}`, '_blank');
+                });
+                
+                messageActions.appendChild(copyAction);
+                messageActions.appendChild(shareAction);
+                messageDiv.appendChild(messageActions);
+            }
+            
+            messagesContainer.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Save to current conversation if needed
+            if (saveToStorage) {
+                currentConversation.push({
+                    role: role,
+                    content: content,
+                    timestamp: timestamp || new Date().toISOString()
+                });
+                
+                localStorage.setItem('hadith_ai_current_conversation', JSON.stringify(currentConversation));
+            }
+        }
+        
+        // Apply font size to all messages
+        function applyFontSizeToMessages() {
+            const messageContents = document.querySelectorAll('.message-content');
+            messageContents.forEach(content => {
+                content.style.fontSize = `${fontSize}px`;
+            });
+        }
+        
+        // Apply font to all messages
+        function applyFontToMessages(font) {
+            const messageContents = document.querySelectorAll('.message-content');
+            messageContents.forEach(content => {
+                content.style.fontFamily = font;
+            });
+        }
+        
+        // Clear current conversation
+        function clearCurrentConversation() {
+            if (confirm('هل تريد مسح المحادثة الحالية؟')) {
+                currentConversation = [
+                    {
+                        role: 'ai',
+                        content: 'السلام عليكم ورحمة الله وبركاته 🌿<br>أنا Hadith AI، مساعدك الشرعي التابع لمنظمة حديث الإسلامية. كيف يمكنني مساعدتك اليوم؟',
+                        timestamp: new Date().toISOString()
+                    }
+                ];
+                
+                localStorage.setItem('hadith_ai_current_conversation', JSON.stringify(currentConversation));
+                renderCurrentConversation();
+                
+                // Save to history before clearing
+                if (currentConversation.length > 1) {
+                    saveConversationToHistory();
+                }
+            }
+        }
+        
+        // Copy current conversation
+        function copyCurrentConversation() {
+            let conversationText = '';
+            
+            currentConversation.forEach(msg => {
+                const sender = msg.role === 'user' ? 'أنت' : 'Hadith AI';
+                const content = msg.content.replace(/<br>/g, '\n');
+                const time = new Date(msg.timestamp).toLocaleString('ar-EG');
+                
+                conversationText += `${sender} (${time}):\n${content}\n\n`;
+            });
+            
+            navigator.clipboard.writeText(conversationText);
+            
+            // Show feedback
+            const originalText = copyChatBtn.innerHTML;
+            copyChatBtn.innerHTML = '<i class="fas fa-check"></i>';
+            setTimeout(() => {
+                copyChatBtn.innerHTML = '<i class="fas fa-copy"></i>';
+            }, 2000);
+        }
+        
+        // Save conversation to history
+        function saveConversationToHistory() {
+            if (currentConversation.length > 1) {
+                conversationHistory.push({
+                    id: Date.now(),
+                    title: currentConversation[1].content.substring(0, 50) + '...',
+                    messages: [...currentConversation],
+                    timestamp: new Date().toISOString()
+                });
+                
+                // Keep only last 50 conversations
+                if (conversationHistory.length > 50) {
+                    conversationHistory = conversationHistory.slice(conversationHistory.length - 50);
+                }
+                
+                localStorage.setItem('hadith_ai_conversation_history', JSON.stringify(conversationHistory));
+            }
+        }
+        
+        // Render conversation history
+        function renderConversationHistory() {
+            historyContainer.innerHTML = '';
+            
+            if (conversationHistory.length === 0) {
+                historyContainer.innerHTML = '<p class="history-item">لا يوجد محادثات سابقة</p>';
+                return;
+            }
+            
+            conversationHistory.slice().reverse().forEach(conversation => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div class="history-question">${conversation.title}</div>
+                    <div class="history-answer">${conversation.messages.length} رسالة</div>
+                    <div class="history-date">${new Date(conversation.timestamp).toLocaleString('ar-EG')}</div>
+                `;
+                
+                historyItem.addEventListener('click', () => {
+                    currentConversation = conversation.messages;
+                    localStorage.setItem('hadith_ai_current_conversation', JSON.stringify(currentConversation));
+                    renderCurrentConversation();
+                    document.getElementById('history-modal').style.display = 'none';
+                });
+                
+                historyContainer.appendChild(historyItem);
+            });
+        }
+        
+        // Helper: robust parsing of Gemini responses
+        function extractTextFromResponse(data) {
+            try {
+                if (data && data.candidates && data.candidates.length > 0) {
+                    const cand = data.candidates[0];
+                    if (cand.content && cand.content.parts && cand.content.parts.length > 0) {
+                        return cand.content.parts[0].text;
+                    }
+                    if (cand.content && cand.content.text) return cand.content.text;
+                    if (cand.text) return cand.text;
+                }
+                if (data && data.output && Array.isArray(data.output) && data.output[0]) {
+                    const out = data.output[0];
+                    if (out.generations && out.generations[0] && out.generations[0].text) {
+                        return out.generations[0].text;
+                    }
+                    if (out.text) return out.text;
+                }
+                if (data && data.text) return data.text;
+            } catch (err) {
+                console.error('Parsing error', err);
+            }
+            return null;
+        }
+
+        // Format answer with better styling
+        function formatAnswer(text) {
+            // Split into paragraphs and add line breaks
+            return text.replace(/\n/g, '<br>');
+        }
+
+        // Build conversation context for API
+        function buildConversationContext(userMessage) {
+            // Start with system instructions
+            let context = [
+                {
+                    role: 'user',
+                    parts: [{ text: SYSTEM_INSTRUCTIONS }]
+                },
+                {
+                    role: 'model', 
+                    parts: [{ text: 'نعم، فهمت التعليمات. أنا Hadith AI التابع لمنظمة حديث الإسلامية، وسألتزم بالهوية والمصادر والمنهجية المحددة.' }]
+                }
+            ];
+            
+            // Add conversation history (last 10 messages to avoid token limits)
+            const recentMessages = currentConversation.slice(-10);
+            
+            recentMessages.forEach(msg => {
+                context.push({
+                    role: msg.role === 'user' ? 'user' : 'model',
+                    parts: [{ text: msg.content.replace(/<br>/g, '\n') }]
+                });
+            });
+            
+            // Add the new user message
+            context.push({
+                role: 'user',
+                parts: [{ text: userMessage }]
+            });
+            
+            return context;
+        }
+
+        // Message functions
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+            
+            // Add user message to chat
+            addMessageToChat('user', message);
+            
+            // Clear input
+            userInput.value = '';
+            
+            // Disable send button during processing
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            
+            // Add loading indicator
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message ai-message';
+            loadingDiv.innerHTML = `
+                <div class="loading">
+                    <div class="loading-dot"></div>
+                    <div class="loading-dot"></div>
+                    <div class="loading-dot"></div>
+                </div>
+            `;
+            messagesContainer.appendChild(loadingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            try {
+                // Build conversation context with system instructions
+                const conversationContext = buildConversationContext(message);
+                
+                const payload = {
+                    contents: conversationContext
+                };
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-goog-api-key': API_KEY
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    let errText = await response.text().catch(() => '');
+                    throw new Error('Network response was not ok: ' + response.status + ' ' + errText);
+                }
+                
+                const data = await response.json();
+                const aiResponse = extractTextFromResponse(data);
+                
+                // Remove loading indicator
+                messagesContainer.removeChild(loadingDiv);
+                
+                if (aiResponse) {
+                    const formattedAnswer = formatAnswer(aiResponse);
+                    addMessageToChat('ai', formattedAnswer);
+                } else {
+                    throw new Error('No response from AI');
+                }
+            } catch (error) {
+                // Remove loading indicator
+                if (messagesContainer.contains(loadingDiv)) {
+                    messagesContainer.removeChild(loadingDiv);
+                }
+                
+                addMessageToChat('ai', 'عذرًا، حدث خطأ أثناء معالجة سؤالك. يرجى المحاولة مرة أخرى.');
+                console.error('Error:', error);
+            } finally {
+                // Re-enable send button
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> إرسال';
+            }
+        }
+        
+        // Initial setup
+        window.onload = () => {
+            // Apply initial font size
+            applyFontSizeToMessages();
+            
+            // Load preferences
+            loadPreferences();
+        };
+    </script>
+</body>
+</html>
